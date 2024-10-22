@@ -1,0 +1,147 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "./";
+
+// Material Service
+service MaterialService {
+    // Service to handle material management
+    rpc AddMaterial(Material) returns (MaterialResponse);
+    rpc FindMaterialByID(MaterialID) returns (Material);
+    rpc FindAllMaterial(MaterialNoParams) returns (MaterialList);
+    rpc EditMaterial(Material) returns (Material);
+    rpc RemoveMaterial(MaterialID) returns (MaterialResponse);
+
+    // Service to handle item management
+    rpc AddItem(Item) returns (ItemResponse);
+    rpc FindItemByID(ItemID) returns (Item);
+    rpc FindAllItem(ItemNoParams) returns (ItemList);
+    rpc EditItem(Item) returns (Item);
+    rpc RemoveItem(ItemID) returns (ItemResponse);
+
+    // Service to handle orders
+    rpc PlaceOrder(Order)returns(OrderResponse);
+    rpc OrderHistory(ItemNoParams) returns (OrderList);
+    rpc FindOrder(ItemID) returns (Order);
+    rpc FindOrdersByUser(ItemID) returns (OrderList);
+}
+
+// Material messages
+message Material {
+    uint32 Material_ID = 1;
+    string Material_Name = 2;
+    string Description = 3;
+    int32 Stock = 4;
+    double Price = 5;
+}
+
+message MaterialResponse {
+    enum Status {
+        OK = 0;
+        ERROR = 1;
+    }
+
+    Status status = 1;
+    string message = 2;
+    oneof payload {
+        string error = 3;
+        string data = 4;
+    }
+}
+
+message MaterialNoParams {}
+
+message MaterialList {
+    repeated Material Materials = 1;
+}
+
+message MaterialID {
+    uint32 ID = 1;  // Corrected typo
+}
+
+// Item messages
+message Item {
+    uint32 Item_ID = 1;
+    string Item_Name = 2;
+    uint32 Material_ID = 3;
+    uint32 Length = 4;
+    uint32 Width = 5;
+    uint32 Fixed_Size_ID = 6;
+    bool Is_Custom = 7;
+    float Estimated_Price = 8;
+}
+
+message ItemResponse {
+    enum Status {
+        OK = 0;
+        ERROR = 1;
+    }
+
+    Status status = 1;
+    string message = 2;
+    oneof payload {
+        string error = 3;
+        string data = 4;
+    }
+}
+
+message ItemID {
+    uint32 ID = 1;  // Corrected typo
+}
+
+message ItemList {
+    repeated Item Items = 1;
+}
+
+message ItemNoParams {}
+
+// Order messages
+message Order {
+    uint32 Order_ID = 1;
+    uint32 User_ID = 2;
+    uint32 Item_ID = 3;
+    int32 Quantity = 4;
+    string Status = 5;
+    string Custom_cut = 6;
+    bool Is_Custom = 7;
+    double Amount = 8;
+    string Payment_ID = 9;
+}
+
+message OrderList {
+    repeated Order Orders = 1;
+}
+
+message OrderResponse {
+    enum Status {
+        OK = 0;
+        ERROR = 1;
+    }
+
+    Status status = 1;
+    string message = 2;
+    oneof payload {
+        string error = 3;
+        string data = 4;
+    }
+}
+
+
+
+//Payment
+
+message PaymentResponse {
+    uint32 Product_ID = 1;
+    string User_Name = 2;
+    string User_Email = 3;
+    float Amount = 4;
+    string Order_ID = 5;
+}
+
+message Payment {
+    uint32 User_ID = 1;
+    string Payment_ID = 2;
+    float Amount = 3;
+    uint32 Product_ID = 4;
+}

@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
+	"math"
 
 	"github.com/ratheeshkumar25/opt_cut_material_service/pkg/model"
 )
@@ -14,13 +15,26 @@ var PredefinedSizes = map[uint]model.PredefinedSize{
 	3: {Length: 150, Width: 90, Name: "Large"},
 }
 
-// CalculateEstPrice calculates the estimated price based on item size.
-func CalculateEstPrice(item *model.Item, pricePerUnit float64) (float64, error) {
+func CalculateEstPrice(item *model.Item, pricePerSheet, plywoodSize, wasteFactor float64) (float64, error) {
+	// Calculate the required sheets using the helper function
+	requiredSheets, err := CalculateRequiredSheets(item, plywoodSize, wasteFactor)
+	if err != nil {
+		return 0, err
+	}
+
+	// Calculate estimated price based on the number of sheets
+	estPrice := requiredSheets * pricePerSheet
+	roundedEstPrice := math.Round(estPrice*100) / 100
+
+	return roundedEstPrice, nil
+}
+
+// CalculateRequiredSheets calculates the number of plywood sheets required based on item area, plywood sheet size, and waste factor.
+func CalculateRequiredSheets(item *model.Item, plywoodSize, wasteFactor float64) (float64, error) {
 	var length, width uint
 
-	// Check if the item has a predefined size
+	// Determine the dimensions of the item
 	if item.FixedSizeID != 0 {
-		// Fetch predefined size from the map
 		size, exists := PredefinedSizes[item.FixedSizeID]
 		if !exists {
 			return 0, fmt.Errorf("invalid FixedSizeID: %d", item.FixedSizeID)
@@ -28,7 +42,6 @@ func CalculateEstPrice(item *model.Item, pricePerUnit float64) (float64, error) 
 		length = size.Length
 		width = size.Width
 	} else {
-		// Use custom dimensions
 		length = item.Length
 		width = item.Width
 	}
@@ -37,7 +50,10 @@ func CalculateEstPrice(item *model.Item, pricePerUnit float64) (float64, error) 
 		return 0, errors.New("invalid dimensions")
 	}
 
-	// Calculate estimated price (assuming it's based on area: length * width * price per unit)
-	estPrice := float64(length*width) * pricePerUnit
-	return estPrice, nil
+	// Calculate the item area
+	itemArea := float64(length * width)
+
+	// Calculate the required number of sheets, considering the waste factor
+	requiredSheets := (itemArea * (1 + wasteFactor)) / plywoodSize
+	return requiredSheets, nil
 }

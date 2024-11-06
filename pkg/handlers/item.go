@@ -41,3 +41,11 @@ func (m *MaterialHandler) RemoveItem(ctx context.Context, p *pb.ItemID) (*pb.Ite
 	}
 	return response, nil
 }
+
+func (m *MaterialHandler) FindAllItemByUser(ctx context.Context, p *pb.ItemID) (*pb.ItemList, error) {
+	response, err := m.SVC.FindAllItemByUser(p)
+	if err != nil {
+		return response, err
+	}
+	return response, nil
+}

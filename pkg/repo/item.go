@@ -39,8 +39,18 @@ func (m *MaterialRepository) UpdateItem(Item *model.Item) error {
 
 // DeletItem implements interfaces.MaterialRepoInter.
 func (m *MaterialRepository) DeletItem(ItemID uint) error {
-	if err := m.DB.Delete(model.Item{}, ItemID).Error; err != nil {
+	if err := m.DB.Delete(&model.Item{}, ItemID).Error; err != nil {
 		return err
 	}
 	return nil
+}
+
+// Get All items by user from database
+func (m *MaterialRepository) FindAllItemByUsers(userID uint) (*[]model.Item, error) {
+	var items []model.Item
+	// Filter items by user ID
+	if err := m.DB.Where("user_id = ?", userID).Find(&items).Error; err != nil {
+		return nil, err
+	}
+	return &items, nil
 }

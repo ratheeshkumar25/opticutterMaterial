@@ -11,6 +11,7 @@ type Item struct {
 	FixedSizeID uint    `gorm:"null"`
 	IsCustom    bool    `gorm:"default:false"` // Flag indicating if size is custom
 	EstPrice    float32 `gorm:"null"`
+	UserID      uint    `gorm:"null"`
 }
 
 type PredefinedSize struct {

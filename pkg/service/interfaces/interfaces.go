@@ -16,6 +16,7 @@ type MaterialServiceInte interface {
 	RemoveItemService(p *pb.ItemID) (*pb.ItemResponse, error)
 	FindItemByID(p *pb.ItemID) (*pb.Item, error)
 	FindAllItem(p *pb.ItemNoParams) (*pb.ItemList, error)
+	FindAllItemByUser(p *pb.ItemID) (*pb.ItemList, error)
 
 	// Service to handle orders
 	PlaceOrderService(p *pb.Order) (*pb.OrderResponse, error)

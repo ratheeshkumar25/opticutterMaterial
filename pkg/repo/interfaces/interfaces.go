@@ -8,6 +8,7 @@ type MaterialRepoInter interface {
 	FindMaterialByID(MaterialID uint) (*model.Material, error)
 	FindAllMaterial() (*[]model.Material, error)
 	UpdateMaterial(Material *model.Material) error
+	UpdateMaterialStock(materialID uint, quantity uint) error
 	DeleteMaterial(MaterialID uint) error
 
 	//Items
@@ -16,6 +17,7 @@ type MaterialRepoInter interface {
 	FindAllItem() (*[]model.Item, error)
 	UpdateItem(Item *model.Item) error
 	DeletItem(ItemID uint) error
+	FindAllItemByUsers(userID uint) (*[]model.Item, error)
 
 	//Orders
 	CreateOrders(Orders *model.Order) (uint, error)

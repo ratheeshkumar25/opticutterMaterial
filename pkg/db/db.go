@@ -28,6 +28,9 @@ func ConnectDB(config *config.Config) *gorm.DB {
 		&model.Item{},
 		&model.Material{},
 		&model.Order{},
+		&model.Payment{},
+		&model.CuttingResult{},
+		&model.Component{},
 	)
 
 	if err != nil {

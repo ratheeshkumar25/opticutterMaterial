@@ -23,8 +23,15 @@ type MaterialRepoInter interface {
 	CreateOrders(Orders *model.Order) (uint, error)
 	FindOrdersByID(OrdersID uint) (*model.Order, error)
 	UpdateOrders(Orders *model.Order) error
+	UpdateOrderStaus(OrderID uint, status string) error
 	DeleteOrders(OrdersID uint) error
 	FindAllOrders() (*[]model.Order, error)
 	FindOrdersByUser(userID uint) (*[]model.Order, error)
 	FindOrder(userID, ItemID uint) (*model.Order, error)
+	GetLatestPaymentByOrderID(orderID int) (model.Payment, error)
+	SavePayment(payment *model.Payment) error
+	UpdatePaymentStatus(paymentID, status string) error
+	UpdatePaymentAndOrderStatus(paymentID string, orderID int, paymentStatus string, orderStatus string) error
+	SaveCuttingResult(itemID uint, components []model.Component) error
+	GetCuttingResultByItemID(itemID uint) ([]model.Component, error)
 }

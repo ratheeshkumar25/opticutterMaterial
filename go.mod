@@ -3,7 +3,10 @@ module github.com/ratheeshkumar25/opt_cut_material_service
 go 1.23.1
 
 require (
+	github.com/go-redis/redis/v8 v8.11.5
+	github.com/razorpay/razorpay-go v1.3.2
 	github.com/spf13/viper v1.19.0
+	github.com/stripe/stripe-go/v72 v72.122.0
 	google.golang.org/grpc v1.67.1
 	google.golang.org/protobuf v1.34.2
 	gorm.io/driver/postgres v1.5.9
@@ -11,6 +14,8 @@ require (
 )
 
 require (
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect

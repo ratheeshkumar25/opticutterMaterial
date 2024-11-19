@@ -68,3 +68,5 @@ func (m *MaterialRepository) UpdateMaterialStock(materialID uint, quantity uint)
 	// Save the updated material
 	return m.DB.Save(&material).Error
 }
+
+

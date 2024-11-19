@@ -23,4 +23,10 @@ type MaterialServiceInte interface {
 	FindAllOrdersSvc(p *pb.ItemNoParams) (*pb.OrderList, error)
 	FindOrdersByUserSvc(p *pb.ItemID) (*pb.OrderList, error)
 	FindOrderSvc(p *pb.ItemID) (*pb.Order, error)
+
+	//Service to handle the payment
+	PaymentService(p *pb.Order) (*pb.PaymentResponse, error)
+	PaymentSuccessService(p *pb.Payment) (*pb.PaymentStatusResponse, error)
+	GenerateCuttingResult(p *pb.ItemID) (*pb.CuttingResultResponse, error)
+	GetCuttingResService(p *pb.ItemID) (*pb.CuttingResultResponse, error)
 }

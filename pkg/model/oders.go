@@ -11,5 +11,5 @@ type Order struct {
 	CustomCut string  `gorm:"not null"`      // Custom cut or any other preferences
 	IsCustom  bool    `gorm:"default:false"` // If the item has a custom size
 	Amount    float64 `gorm:"not null"`
-	PaymentID string  `gorm:"not null"`
+	//PaymentID string  `gorm:"not null"`
 }

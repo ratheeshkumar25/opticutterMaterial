@@ -19,21 +19,25 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MaterialService_AddMaterial_FullMethodName       = "/pb.MaterialService/AddMaterial"
-	MaterialService_FindMaterialByID_FullMethodName  = "/pb.MaterialService/FindMaterialByID"
-	MaterialService_FindAllMaterial_FullMethodName   = "/pb.MaterialService/FindAllMaterial"
-	MaterialService_EditMaterial_FullMethodName      = "/pb.MaterialService/EditMaterial"
-	MaterialService_RemoveMaterial_FullMethodName    = "/pb.MaterialService/RemoveMaterial"
-	MaterialService_AddItem_FullMethodName           = "/pb.MaterialService/AddItem"
-	MaterialService_FindItemByID_FullMethodName      = "/pb.MaterialService/FindItemByID"
-	MaterialService_FindAllItemByUser_FullMethodName = "/pb.MaterialService/FindAllItemByUser"
-	MaterialService_FindAllItem_FullMethodName       = "/pb.MaterialService/FindAllItem"
-	MaterialService_EditItem_FullMethodName          = "/pb.MaterialService/EditItem"
-	MaterialService_RemoveItem_FullMethodName        = "/pb.MaterialService/RemoveItem"
-	MaterialService_PlaceOrder_FullMethodName        = "/pb.MaterialService/PlaceOrder"
-	MaterialService_OrderHistory_FullMethodName      = "/pb.MaterialService/OrderHistory"
-	MaterialService_FindOrder_FullMethodName         = "/pb.MaterialService/FindOrder"
-	MaterialService_FindOrdersByUser_FullMethodName  = "/pb.MaterialService/FindOrdersByUser"
+	MaterialService_AddMaterial_FullMethodName           = "/pb.MaterialService/AddMaterial"
+	MaterialService_FindMaterialByID_FullMethodName      = "/pb.MaterialService/FindMaterialByID"
+	MaterialService_FindAllMaterial_FullMethodName       = "/pb.MaterialService/FindAllMaterial"
+	MaterialService_EditMaterial_FullMethodName          = "/pb.MaterialService/EditMaterial"
+	MaterialService_RemoveMaterial_FullMethodName        = "/pb.MaterialService/RemoveMaterial"
+	MaterialService_AddItem_FullMethodName               = "/pb.MaterialService/AddItem"
+	MaterialService_FindItemByID_FullMethodName          = "/pb.MaterialService/FindItemByID"
+	MaterialService_FindAllItemByUser_FullMethodName     = "/pb.MaterialService/FindAllItemByUser"
+	MaterialService_FindAllItem_FullMethodName           = "/pb.MaterialService/FindAllItem"
+	MaterialService_EditItem_FullMethodName              = "/pb.MaterialService/EditItem"
+	MaterialService_RemoveItem_FullMethodName            = "/pb.MaterialService/RemoveItem"
+	MaterialService_PlaceOrder_FullMethodName            = "/pb.MaterialService/PlaceOrder"
+	MaterialService_OrderHistory_FullMethodName          = "/pb.MaterialService/OrderHistory"
+	MaterialService_FindOrder_FullMethodName             = "/pb.MaterialService/FindOrder"
+	MaterialService_FindOrdersByUser_FullMethodName      = "/pb.MaterialService/FindOrdersByUser"
+	MaterialService_CreatePayment_FullMethodName         = "/pb.MaterialService/CreatePayment"
+	MaterialService_PaymentSuccess_FullMethodName        = "/pb.MaterialService/PaymentSuccess"
+	MaterialService_GenerateCuttingResult_FullMethodName = "/pb.MaterialService/GenerateCuttingResult"
+	MaterialService_GetCuttingResult_FullMethodName      = "/pb.MaterialService/GetCuttingResult"
 )
 
 // MaterialServiceClient is the client API for MaterialService service.
@@ -60,6 +64,11 @@ type MaterialServiceClient interface {
 	OrderHistory(ctx context.Context, in *ItemNoParams, opts ...grpc.CallOption) (*OrderList, error)
 	FindOrder(ctx context.Context, in *ItemID, opts ...grpc.CallOption) (*Order, error)
 	FindOrdersByUser(ctx context.Context, in *ItemID, opts ...grpc.CallOption) (*OrderList, error)
+	// Service to handle the payment and cutting result
+	CreatePayment(ctx context.Context, in *Order, opts ...grpc.CallOption) (*PaymentResponse, error)
+	PaymentSuccess(ctx context.Context, in *Payment, opts ...grpc.CallOption) (*PaymentStatusResponse, error)
+	GenerateCuttingResult(ctx context.Context, in *ItemID, opts ...grpc.CallOption) (*CuttingResultResponse, error)
+	GetCuttingResult(ctx context.Context, in *ItemID, opts ...grpc.CallOption) (*CuttingResultResponse, error)
 }
 
 type materialServiceClient struct {
@@ -220,6 +229,46 @@ func (c *materialServiceClient) FindOrdersByUser(ctx context.Context, in *ItemID
 	return out, nil
 }
 
+func (c *materialServiceClient) CreatePayment(ctx context.Context, in *Order, opts ...grpc.CallOption) (*PaymentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PaymentResponse)
+	err := c.cc.Invoke(ctx, MaterialService_CreatePayment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *materialServiceClient) PaymentSuccess(ctx context.Context, in *Payment, opts ...grpc.CallOption) (*PaymentStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PaymentStatusResponse)
+	err := c.cc.Invoke(ctx, MaterialService_PaymentSuccess_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *materialServiceClient) GenerateCuttingResult(ctx context.Context, in *ItemID, opts ...grpc.CallOption) (*CuttingResultResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CuttingResultResponse)
+	err := c.cc.Invoke(ctx, MaterialService_GenerateCuttingResult_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *materialServiceClient) GetCuttingResult(ctx context.Context, in *ItemID, opts ...grpc.CallOption) (*CuttingResultResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CuttingResultResponse)
+	err := c.cc.Invoke(ctx, MaterialService_GetCuttingResult_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MaterialServiceServer is the server API for MaterialService service.
 // All implementations must embed UnimplementedMaterialServiceServer
 // for forward compatibility.
@@ -244,6 +293,11 @@ type MaterialServiceServer interface {
 	OrderHistory(context.Context, *ItemNoParams) (*OrderList, error)
 	FindOrder(context.Context, *ItemID) (*Order, error)
 	FindOrdersByUser(context.Context, *ItemID) (*OrderList, error)
+	// Service to handle the payment and cutting result
+	CreatePayment(context.Context, *Order) (*PaymentResponse, error)
+	PaymentSuccess(context.Context, *Payment) (*PaymentStatusResponse, error)
+	GenerateCuttingResult(context.Context, *ItemID) (*CuttingResultResponse, error)
+	GetCuttingResult(context.Context, *ItemID) (*CuttingResultResponse, error)
 	mustEmbedUnimplementedMaterialServiceServer()
 }
 
@@ -298,6 +352,18 @@ func (UnimplementedMaterialServiceServer) FindOrder(context.Context, *ItemID) (*
 }
 func (UnimplementedMaterialServiceServer) FindOrdersByUser(context.Context, *ItemID) (*OrderList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindOrdersByUser not implemented")
+}
+func (UnimplementedMaterialServiceServer) CreatePayment(context.Context, *Order) (*PaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreatePayment not implemented")
+}
+func (UnimplementedMaterialServiceServer) PaymentSuccess(context.Context, *Payment) (*PaymentStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PaymentSuccess not implemented")
+}
+func (UnimplementedMaterialServiceServer) GenerateCuttingResult(context.Context, *ItemID) (*CuttingResultResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GenerateCuttingResult not implemented")
+}
+func (UnimplementedMaterialServiceServer) GetCuttingResult(context.Context, *ItemID) (*CuttingResultResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCuttingResult not implemented")
 }
 func (UnimplementedMaterialServiceServer) mustEmbedUnimplementedMaterialServiceServer() {}
 func (UnimplementedMaterialServiceServer) testEmbeddedByValue()                         {}
@@ -590,6 +656,78 @@ func _MaterialService_FindOrdersByUser_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MaterialService_CreatePayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Order)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MaterialServiceServer).CreatePayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MaterialService_CreatePayment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MaterialServiceServer).CreatePayment(ctx, req.(*Order))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MaterialService_PaymentSuccess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Payment)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MaterialServiceServer).PaymentSuccess(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MaterialService_PaymentSuccess_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MaterialServiceServer).PaymentSuccess(ctx, req.(*Payment))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MaterialService_GenerateCuttingResult_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ItemID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MaterialServiceServer).GenerateCuttingResult(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MaterialService_GenerateCuttingResult_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MaterialServiceServer).GenerateCuttingResult(ctx, req.(*ItemID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MaterialService_GetCuttingResult_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ItemID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MaterialServiceServer).GetCuttingResult(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MaterialService_GetCuttingResult_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MaterialServiceServer).GetCuttingResult(ctx, req.(*ItemID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MaterialService_ServiceDesc is the grpc.ServiceDesc for MaterialService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -656,6 +794,22 @@ var MaterialService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindOrdersByUser",
 			Handler:    _MaterialService_FindOrdersByUser_Handler,
+		},
+		{
+			MethodName: "CreatePayment",
+			Handler:    _MaterialService_CreatePayment_Handler,
+		},
+		{
+			MethodName: "PaymentSuccess",
+			Handler:    _MaterialService_PaymentSuccess_Handler,
+		},
+		{
+			MethodName: "GenerateCuttingResult",
+			Handler:    _MaterialService_GenerateCuttingResult_Handler,
+		},
+		{
+			MethodName: "GetCuttingResult",
+			Handler:    _MaterialService_GetCuttingResult_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

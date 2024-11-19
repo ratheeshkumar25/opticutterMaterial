@@ -1,6 +1,12 @@
 package repo
 
-import "github.com/ratheeshkumar25/opt_cut_material_service/pkg/model"
+import (
+	"fmt"
+	"log"
+
+	"github.com/ratheeshkumar25/opt_cut_material_service/pkg/model"
+	"gorm.io/gorm"
+)
 
 // CreateOrders implements interfaces.MaterialRepoInter.
 func (m *MaterialRepository) CreateOrders(order *model.Order) (uint, error) {
@@ -60,4 +66,41 @@ func (m *MaterialRepository) DeleteOrders(OrdersID uint) error {
 		return err
 	}
 	return nil
+}
+
+// UpdateOrderStaus implements interfaces.MaterialRepoInter.
+func (m *MaterialRepository) UpdateOrderStaus(OrderID uint, status string) error {
+	// Find the order by ID and update the status
+	if err := m.DB.Model(&model.Order{}).
+		Where("id = ?", OrderID).
+		Update("status", status).Error; err != nil {
+		return fmt.Errorf("failed to update order status: %v", err)
+	}
+	log.Println("Order status updated successfully")
+	return nil
+}
+
+// GetLatestPaymentByOrderID implements interfaces.MaterialRepoInter.
+func (m *MaterialRepository) GetLatestPaymentByOrderID(orderID int) (model.Payment, error) {
+	var payment model.Payment
+	query := `
+        SELECT payment_id, order_id, amount, status, client_secret, payment_method, user_id
+        FROM payments
+        WHERE order_id = ?
+        ORDER BY 
+            CASE 
+                WHEN status = 'Pending' THEN 1
+                WHEN status = 'Completed' THEN 2
+                ELSE 3
+            END, 
+            payment_id DESC
+        LIMIT 1`
+	result := m.DB.Raw(query, orderID).Scan(&payment)
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return payment, nil // No payment found for the order_id
+		}
+		return payment, fmt.Errorf("failed to fetch latest payment: %v", result.Error)
+	}
+	return payment, nil
 }

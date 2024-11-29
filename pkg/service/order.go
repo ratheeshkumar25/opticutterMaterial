@@ -32,6 +32,7 @@ func (m *MaterialService) PlaceOrderService(p *pb.Order) (*pb.OrderResponse, err
 		CustomCut: p.CustomCut,
 		IsCustom:  p.Is_Custom,
 		Amount:    float64(totalAmount),
+		Email:     p.Email,
 	}
 
 	// Save the order to the database
@@ -60,6 +61,7 @@ func (m *MaterialService) PlaceOrderService(p *pb.Order) (*pb.OrderResponse, err
 		"UserID":        newOrder.UserID,
 		"PaymentAmount": newOrder.Amount,
 		"Status":        newOrder.Status,
+		"Email":         newOrder.Email,
 	}
 
 	// Serialize order data to JSON

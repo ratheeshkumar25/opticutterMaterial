@@ -13,6 +13,8 @@ const wasteFactor = 0.1    // waste factor (10%)
 
 // AddItemService implements interfaces.MaterialServiceInte.
 func (m *MaterialService) AddItemService(p *pb.Item) (*pb.ItemResponse, error) {
+
+	//material,err := m.Repo.FindMaterialByID()
 	newItem := model.Item{
 		ItemName:    p.Item_Name,
 		MaterialID:  uint(p.Material_ID),
@@ -33,7 +35,7 @@ func (m *MaterialService) AddItemService(p *pb.Item) (*pb.ItemResponse, error) {
 		}, err
 	}
 
-	// Fetch material to get price per unit
+	// // Fetch material to get price per unit
 	material, err := m.Repo.FindMaterialByID(newItem.MaterialID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find material: %v", err)

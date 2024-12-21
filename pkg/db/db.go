@@ -18,6 +18,9 @@ func ConnectDB(config *config.Config) *gorm.DB {
 	port := config.Port
 	sslMode := config.Sslmode
 
+	// Print each configuration for debugging
+	fmt.Printf("Connecting to DB: host=%s, user=%s, password=%s, dbname=%s, port=%s, sslmode=%s\n", host, user, password, dbname, port, sslMode)
+
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port =%s sslmode=%s", host, user, password, dbname, port, sslMode)
 
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})

@@ -53,7 +53,7 @@ func (k *KafkaProducer) ProducerPaymentEvent(event PaymentEvent) error {
 }
 
 func HandlePaymentNotification(paymentID string, orderID uint, email string, amount float64, datetime time.Time) error {
-	kafkaProducer, err := NewKafkaProducer("localhost:9092")
+	kafkaProducer, err := NewKafkaProducer("kafka:9092")
 	if err != nil {
 		return fmt.Errorf("failed to create Kafka producer: %w", err)
 	}

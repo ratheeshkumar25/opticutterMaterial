@@ -58,7 +58,7 @@ func (k *KafkaCuttingResultProducer) ProducerCuttingResultEvent(event CuttingRes
 }
 
 func HandleCuttingResultNotification(cuttingResultID uint, components []ComponentPayload, itemID uint) error {
-	kafkaProducer, err := NewKafkaCuttingResultProducer("localhost:9092")
+	kafkaProducer, err := NewKafkaCuttingResultProducer("kafka:9092")
 	if err != nil {
 		return fmt.Errorf("failed to create Kafka producer: %w", err)
 	}

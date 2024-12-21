@@ -58,7 +58,7 @@ func (m *MaterialService) GenerateCuttingResult(p *pb.ItemID) (*pb.CuttingResult
 	log.Printf("Generating components for item ID %d with Length: %d, Width: %d", item.ID, length, width)
 
 	// Generate the components using the utility function
-	components, err := utils.GenerateComponents(item.MaterialID, length, width)
+	components, err := utils.GenerateComponents(item.MaterialID, item.ItemName, length, width)
 	if err != nil {
 		log.Printf("Failed to generate components for item ID %d: %v", item.ID, err)
 		return &pb.CuttingResultResponse{

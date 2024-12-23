@@ -54,7 +54,7 @@ func (r *RedisService) GetFromRedis(key string) (string, error) {
 // DeleteDataFromRedis will delete data from Redis for a given key.
 func (r *RedisService) DeleteDataFromRedis(key string) error {
 	ctx := context.Background()
-	err := r.Client.Del(ctx, key).Err() // This deletes the key
+	err := r.Client.Del(ctx, key).Err() 
 	if err != nil {
 		return err // Return the error if deletion fails
 	}

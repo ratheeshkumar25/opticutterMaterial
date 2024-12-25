@@ -13,7 +13,8 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /app
 
 COPY --from=builder /app/materialservice .
-COPY ./cmd/.env /app/
+
+COPY .env /app/
 
 CMD ["./materialservice"]
 

@@ -1,0 +1,56 @@
+name: CI for MaterialService
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Set up Go
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.23.1  # Match your Go version
+
+    # Run unit tests files
+    - name: Run Unit Tests
+      run: |
+        go test ./... -v
+
+    # Log in to Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    # Create .env file using GitHub secrets variables- because of .env file secret credetials to be hide from repo
+    - name: Create .env file
+      run: |
+        echo "HOST=${{ secrets.HOST }}" >> .env
+        echo "USER=${{ secrets.USER }}" >> .env
+        echo "PASSWORD=${{ secrets.PASSWORD }}" >> .env
+        echo "DBNAME=${{ secrets.DBNAME }}" >> .env
+        echo "PORT=${{ secrets.PORT }}" >> .env
+        echo "REDISHOST=${{ secrets.REDISHOST }}" >> .env
+        echo "GRPCUSERPORT=${{ secrets.GRPCUSERPORT }}" >> .env
+        echo "GRPCADMINPORT=${{ secrets.GRPCADMINPORT }}" >> .env
+        echo "GRPCPORT=${{secrets.GRPCPORT }}" >> .env
+        echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env
+
+    # Build and push Docker image
+    - name: Build and push Docker image
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/materialservice:v1.0 .
+        docker push ${{ secrets.DOCKER_USERNAME }}/materialservice:v1.0

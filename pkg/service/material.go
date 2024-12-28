@@ -7,7 +7,7 @@ import (
 	pb "github.com/ratheeshkumar25/opt_cut_material_service/pkg/pb"
 )
 
-// AddMaterialService implements interfaces.MaterialServiceInte.
+// AddMaterialService implements interfaces.MaterialServiceInterface
 func (m *MaterialService) AddMaterialService(p *pb.Material) (*pb.MaterialResponse, error) {
 	// Create a new material instance from the input
 	newMaterial := model.Material{
